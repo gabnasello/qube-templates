@@ -1,7 +1,7 @@
 ---
 services:
-  sc-py-env:
-    image: gnasello/sc-py-env:latest
+  sc-r-env:
+    image: gnasello/sc-r-env:latest
     volumes:
       - $HOME_RESEARCHER:/home/jovyan/researcher_home
     ports:

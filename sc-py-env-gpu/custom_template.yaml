@@ -1,5 +1,4 @@
 ---
-version: "3"
 services:
   sc-py-env-gpu:
     image: gnasello/sc-py-env-gpu:latest
