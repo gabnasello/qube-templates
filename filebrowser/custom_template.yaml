@@ -1,0 +1,13 @@
+---
+services:
+  filebrowser:
+    image: hurlenko/filebrowser
+    user: "${PUID}:${PGID}"
+    ports:
+      - "8080"
+    volumes:
+      - $HOME_RESEARCHER:/data
+    environment:
+      - FB_NOAUTH=true
+    env_file:
+      - stack.env

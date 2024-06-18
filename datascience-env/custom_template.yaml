@@ -1,0 +1,15 @@
+---
+services:
+  datascience-env:
+    image: gnasello/datascience-env:latest
+    volumes:
+      - $HOME_RESEARCHER:/home/jovyan/researcher_home
+    ports:
+      - 8888
+    user: root
+    environment:
+      - CHOWN_HOME=yes
+      - CHOWN_HOME_OPTS=-R
+      - GRANT_SUDO=yes
+    env_file:
+      - stack.env

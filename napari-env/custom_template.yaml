@@ -1,0 +1,12 @@
+---
+services:
+  napari-env:
+    image: gnasello/napari-env:latest
+    security_opt:
+      - seccomp:unconfined # for terminal to work
+    #volumes:
+    #  - $HOME_RESEARCHER:/config/researcher_home
+    ports:
+      - '3000'
+    #env_file:
+    #  - stack.env

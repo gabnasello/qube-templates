@@ -1,0 +1,5 @@
+# Ignore all .env files
+*.env
+
+# Do not ignore stack.env files in any directory
+!**/stack.env
