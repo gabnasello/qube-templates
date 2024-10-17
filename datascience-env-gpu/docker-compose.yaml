@@ -1,0 +1,35 @@
+services:
+  datascience-gpu:
+    image: gnasello/datascience-env-gpu:latest    
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.datascience-gpu_${UNAME}.rule=PathPrefix(`/${UNAME}/datascience-env-gpu`)"
+      - "traefik.http.services.datascience-gpu_${UNAME}.loadbalancer.server.port=8888"
+      - "traefik.http.routers.datascience-gpu_${UNAME}.entrypoints=web"
+    user: root
+    environment:
+      - CHOWN_HOME=yes
+      - CHOWN_HOME_OPTS=-R
+      - CONTAINER_URL=${DOMAIN_URL}/${UNAME}/datascience-env-gpu/lab?token=${JUPYTER_TOKEN}
+      - DOMAIN_URL
+      - GRANT_SUDO=yes
+      - NB_GID=100
+      - NB_UID=1000
+      - NOTEBOOK_ARGS='--NotebookApp.base_url=/${UNAME}/datascience-env-gpu'
+      - JUPYTER_TOKEN # openssl rand -hex 32
+      - UNAME
+    networks:
+      - traefik-public
+    # deploy:
+    #   resources:
+    #     reservations:
+    #       devices:
+    #         - driver: nvidia
+    #           #count: 'all'
+    #           count: 1
+    #           # device_ids: ['0', '3']
+    #           capabilities: [gpu]
+
+networks:
+  traefik-public:
+    external: true
