@@ -15,7 +15,7 @@ services:
       - GRANT_SUDO=yes
       - NB_GID=100
       - NB_UID=1000
-      - NOTEBOOK_ARGS='--NotebookApp.base_url=/${UNAME}/datascience-env-gpu'
+      - NOTEBOOK_ARGS=--NotebookApp.base_url=/${UNAME}/datascience-env-gpu
       - JUPYTER_TOKEN # openssl rand -hex 32
       - UNAME
     networks:
