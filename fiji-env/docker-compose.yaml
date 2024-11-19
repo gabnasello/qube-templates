@@ -1,5 +1,5 @@
 services:
-  napari-env:
+  fiji-env:
     image: gnasello/fiji-env
     labels:
       - "traefik.enable=true"
