@@ -1,0 +1,23 @@
+services:
+  napari-env:
+    image: gnasello/fiji-env
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.fiji-${UNAME}.entrypoints=web"
+      - "traefik.http.routers.fiji-${UNAME}.rule=Host(`fiji-${UNAME}.${QUBEIP}.nip.io`)"
+      - "traefik.http.services.fiji-${UNAME}.loadbalancer.server.port=3000"
+
+    environment:
+      - CONTAINER_URL=http://fiji-${UNAME}.${QUBEIP}.nip.io:${QUBEPORT}
+      - CUSTOM_USER=${UNAME}
+      - PASSWORD
+      - QUBEPORT
+      - QUBEIP
+      - UNAME
+      
+    networks:
+      - traefik-public
+
+networks:
+  traefik-public:
+    external: true
