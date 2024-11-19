@@ -1,23 +1,20 @@
 services:
-  datascience:
-    image: gnasello/datascience-env:latest    
+  napari-env:
+    image: gnasello/napari-env
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.datascience_${UNAME}.rule=PathPrefix(`/${UNAME}/datascience-env`)"
-      - "traefik.http.services.datascience_${UNAME}.loadbalancer.server.port=8888"
-      - "traefik.http.routers.datascience_${UNAME}.entrypoints=web"
-    user: root
+      - "traefik.http.routers.napari-${UNAME}.entrypoints=web"
+      - "traefik.http.routers.napari-${UNAME}.rule=Host(`napari-${UNAME}.${QUBEIP}.nip.io`)"
+      - "traefik.http.services.napari-${UNAME}.loadbalancer.server.port=3000"
+
     environment:
-      - CHOWN_HOME=yes
-      - CHOWN_HOME_OPTS=-R
-      - CONTAINER_URL=${DOMAIN_URL}/${UNAME}/datascience-env/lab?token=${JUPYTER_TOKEN}
-      - DOMAIN_URL
-      - GRANT_SUDO=yes
-      - NB_GID=100
-      - NB_UID=1000
-      - NOTEBOOK_ARGS='--NotebookApp.base_url=/${UNAME}/datascience-env'
-      - JUPYTER_TOKEN # openssl rand -hex 32
+      - CONTAINER_URL=http://napari-${UNAME}.${QUBEIP}.nip.io:${QUBEPORT}
+      - CUSTOM_USER=${UNAME}
+      - PASSWORD
+      - QUBEPORT
+      - QUBEIP
       - UNAME
+      
     networks:
       - traefik-public
 
