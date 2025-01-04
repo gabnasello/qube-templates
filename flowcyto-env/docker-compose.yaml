@@ -1,0 +1,23 @@
+services:
+  flowcyto-env:
+    image: gnasello/flowcyto-env
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.flowcyto-${UNAME}.entrypoints=web"
+      - "traefik.http.routers.flowcyto-${UNAME}.rule=Host(`flowcyto-${UNAME}.${QUBEIP}.nip.io`)"
+      - "traefik.http.services.flowcyto-${UNAME}.loadbalancer.server.port=3000"
+
+    environment:
+      - CONTAINER_URL=http://flowcyto-${UNAME}.${QUBEIP}.nip.io:${QUBEPORT}
+      - CUSTOM_USER=${UNAME}
+      - PASSWORD
+      - QUBEPORT
+      - QUBEIP
+      - UNAME
+      
+    networks:
+      - traefik-public
+
+networks:
+  traefik-public:
+    external: true

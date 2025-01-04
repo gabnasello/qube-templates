@@ -1,0 +1,26 @@
+services:
+  ofpv:
+    image: gnasello/ofpv-env:latest    
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.ofpv_${UNAME}.rule=PathPrefix(`/${UNAME}/ofpv-env`)"
+      - "traefik.http.services.ofpv_${UNAME}.loadbalancer.server.port=8888"
+      - "traefik.http.routers.ofpv_${UNAME}.entrypoints=web"
+    user: root
+    environment:
+      - CHOWN_HOME=yes
+      - CHOWN_HOME_OPTS=-R
+      - CONTAINER_URL=${DOMAIN_URL}/${UNAME}/ofpv-env/lab?token=${JUPYTER_TOKEN}
+      - DOMAIN_URL
+      - GRANT_SUDO=yes
+      - NB_GID=100
+      - NB_UID=1000
+      - NOTEBOOK_ARGS='--NotebookApp.base_url=/${UNAME}/ofpv-env'
+      - JUPYTER_TOKEN # openssl rand -hex 32
+      - UNAME
+    networks:
+      - traefik-public
+
+networks:
+  traefik-public:
+    external: true

@@ -1,0 +1,23 @@
+services:
+  slicer-env:
+    image: gnasello/slicer-env
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.slicer-${UNAME}.entrypoints=web"
+      - "traefik.http.routers.slicer-${UNAME}.rule=Host(`slicer-${UNAME}.${QUBEIP}.nip.io`)"
+      - "traefik.http.services.slicer-${UNAME}.loadbalancer.server.port=3000"
+
+    environment:
+      - CONTAINER_URL=http://slicer-${UNAME}.${QUBEIP}.nip.io:${QUBEPORT}
+      - CUSTOM_USER=${UNAME}
+      - PASSWORD
+      - QUBEPORT
+      - QUBEIP
+      - UNAME
+      
+    networks:
+      - traefik-public
+
+networks:
+  traefik-public:
+    external: true

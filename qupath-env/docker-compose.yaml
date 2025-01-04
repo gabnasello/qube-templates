@@ -1,0 +1,23 @@
+services:
+  qupath-env:
+    image: gnasello/qupath-env
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.qupath-${UNAME}.entrypoints=web"
+      - "traefik.http.routers.qupath-${UNAME}.rule=Host(`qupath-${UNAME}.${QUBEIP}.nip.io`)"
+      - "traefik.http.services.qupath-${UNAME}.loadbalancer.server.port=3000"
+
+    environment:
+      - CONTAINER_URL=http://qupath-${UNAME}.${QUBEIP}.nip.io:${QUBEPORT}
+      - CUSTOM_USER=${UNAME}
+      - PASSWORD
+      - QUBEPORT
+      - QUBEIP
+      - UNAME
+      
+    networks:
+      - traefik-public
+
+networks:
+  traefik-public:
+    external: true
