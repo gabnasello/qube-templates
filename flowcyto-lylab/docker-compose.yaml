@@ -1,0 +1,24 @@
+services:
+  flowcyto-lylab:
+    image: gnasello/flowcyto-lylab:latest    
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.flowcyto-lylab_${UNAME}.rule=Host(`flowcyto-lylab-${UNAME}.${QUBEIP}.nip.io`)"
+      - "traefik.http.services.flowcyto-lylab_${UNAME}.loadbalancer.server.port=8787"
+      - "traefik.http.routers.flowcyto-lylab_${UNAME}.entrypoints=web"
+    environment:
+      - CONTAINER_URL=http://flowcyto-lylab-${UNAME}.${QUBEIP}.nip.io:${QUBEPORT}
+      - ROOT=true
+      - GROUPI=100
+      - USERID=1000
+      - USERNAME_LOGIN=rstudio
+      - PASSWORD # openssl rand -hex 32
+      - QUBEPORT
+      - QUBEIP
+      - UNAME
+    networks:
+      - traefik-public
+
+networks:
+  traefik-public:
+    external: true
