@@ -3,9 +3,9 @@ services:
     image: gnasello/ofpv-env:latest    
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.ofpv_${UNAME}.entrypoints=web"
-      - "traefik.http.routers.ofpv_${UNAME}.rule=Host(`ofpv-${UNAME}.${QUBEIP}.nip.io`)"
-      - "traefik.http.services.ofpv_${UNAME}.loadbalancer.server.port=3000"
+      - "traefik.http.routers.ofpv-${UNAME}.entrypoints=web"
+      - "traefik.http.routers.ofpv-${UNAME}.rule=Host(`ofpv-${UNAME}.${QUBEIP}.nip.io`)"
+      - "traefik.http.services.ofpv-${UNAME}.loadbalancer.server.port=3000"
 
     environment:
       - CONTAINER_URL=http://ofpv-${UNAME}.${QUBEIP}.nip.io:${QUBEPORT}
