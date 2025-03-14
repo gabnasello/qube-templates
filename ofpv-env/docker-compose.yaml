@@ -4,7 +4,7 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.ofpv_${UNAME}.entrypoints=web"
-      - "traefik.http.routers.ofpv_${UNAME}.rule=Host(`ofpv_${UNAME}.${QUBEIP}.nip.io`)"
+      - "traefik.http.routers.ofpv_${UNAME}.rule=Host(`ofpv-${UNAME}.${QUBEIP}.nip.io`)"
       - "traefik.http.services.ofpv_${UNAME}.loadbalancer.server.port=3000"
 
     environment:
