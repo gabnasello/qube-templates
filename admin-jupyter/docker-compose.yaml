@@ -1,0 +1,27 @@
+services:
+  admin-jupyter:
+    image: quay.io/jupyter/base-notebook:latest
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.jupyter-${UNAME}.rule=PathPrefix(`/${UNAME}/base-notebook`)"
+      - "traefik.http.services.jupyter-${UNAME}.loadbalancer.server.port=8888"
+      - "traefik.http.routers.jupyter-${UNAME}.entrypoints=web"
+    volumes:
+      - /home/ubuntu/admin-files:/home/jovyan/admin-files
+    user: root
+    environment:
+      - CHOWN_HOME=yes
+      - CHOWN_HOME_OPTS=-R
+      - CONTAINER_URL=${DOMAIN_URL}/${UNAME}/base-notebook/lab?token=${JUPYTER_TOKEN}
+      - DOMAIN_URL
+      - GRANT_SUDO=yes
+      - NB_GID=1000
+      - NB_UID=1000
+      - NOTEBOOK_ARGS='--NotebookApp.base_url=/${UNAME}/base-notebook'
+      - JUPYTER_TOKEN # openssl rand -hex 32
+      - UNAME
+    networks:
+      - traefik-public
+networks:
+  traefik-public:
+    external: true
