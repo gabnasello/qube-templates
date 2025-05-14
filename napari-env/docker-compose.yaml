@@ -7,9 +7,13 @@ services:
       - "traefik.http.routers.napari-${UNAME}.rule=Host(`napari-${UNAME}.${QUBEIP}.nip.io`)"
       - "traefik.http.services.napari-${UNAME}.loadbalancer.server.port=3000"
 
+    volumes:
+      - $HOME_RESEARCHER:/config/researcher_home
+
     environment:
       - CONTAINER_URL=http://napari-${UNAME}.${QUBEIP}.nip.io:${QUBEPORT}
       - CUSTOM_USER=${UNAME}
+      - HOME_RESEARCHER=/home/luna.kuleuven.be/${UNAME}
       - PASSWORD
       - QUBEPORT
       - QUBEIP
