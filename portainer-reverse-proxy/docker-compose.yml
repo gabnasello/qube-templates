@@ -17,7 +17,7 @@ services:
       - traefik-public
 
   portainer:
-    image: portainer/portainer-ee:latest
+    image: portainer/portainer-ce:latest
     command: -H unix:///var/run/docker.sock
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
