@@ -6,7 +6,7 @@ class PortainerAPI:
         self.username = username
         self.password = password
         self.token = self.get_jwt_token()
-        self.default_repo_url = "https://github.com/gabnasello/qube-templates.git"
+        self.default_repo_url = "https://github.com/gabnasello/qube-templates"
         self.default_repo_ref = "refs/heads/main"
 
     def get_jwt_token(self):
@@ -161,33 +161,72 @@ class PortainerAPI:
             print(f"User {user_id} assigned to team {team_id}.")
         else:
             raise Exception(f"Failed to assign user to team: {response.text}")
+    
+    def download_compose_file_from_github(
+        self,
+        file_path,
+        repository_url=None,
+        repository_ref=None
+    ):
+        """
+        Downloads a Docker Compose file from a GitHub repository branch.
+    
+        Args:
+        - file_path (str): Path to the compose file within the repo (e.g., "stacks/my-compose.yaml").
+        - repository_url (str): (Optional) GitHub repo URL. Defaults to gabnasello/qube-templates.
+        - repository_ref (str): (Optional) Full ref path (e.g., "refs/heads/main").
+    
+        Returns:
+        - str: The raw content of the compose file.
+        """
 
-    def create_stack(self, stack_name, compose_file_path, endpoint_id=1, env_vars=None, 
-                     repository_url=None, repository_ref=None):
         if repository_url is None:
             repository_url = self.default_repo_url
         if repository_ref is None:
             repository_ref = self.default_repo_ref
         
-        url = f"{self.portainer_url}/api/stacks?type=2&method=repository&endpointId={endpoint_id}"
+        # Convert to raw.githubusercontent URL
+        repo_base = repository_url.replace("https://github.com/", "").replace(".git", "")
+        ref = repository_ref.replace("refs/heads/", "")  # GitHub raw uses just the branch name
+        raw_url = f"https://raw.githubusercontent.com/{repo_base}/{ref}/{file_path}"
+    
+        response = requests.get(raw_url)
+        if response.status_code != 200:
+            raise Exception(f"Failed to download compose file from GitHub: {response.text}")
+        return response.text
+
+
+    def create_stack(self, stack_name, compose_content, endpoint_id=1, env_vars=None):
+        """
+        Creates a stack in Portainer using the compose file content directly.
+    
+        Args:
+        - stack_name (str): Name of the stack.
+        - compose_content (str): Content of the Docker Compose file.
+        - endpoint_id (int): Portainer endpoint ID.
+        - env_vars (list): Optional list of dicts with 'name' and 'value' for environment variables.
+    
+        Raises:
+        - Exception if the stack creation fails.
+        """
+        url = f"{self.portainer_url}/api/stacks/create/standalone/string?endpointId={endpoint_id}"
         headers = {
             "Authorization": f"Bearer {self.token}",
             "Content-Type": "application/json"
         }
-
+    
         data = {
-            "Name": stack_name,
-            "RepositoryURL": repository_url,
-            "RepositoryReferenceName": repository_ref,
-            "composeFile": compose_file_path,
-            "Env": env_vars if env_vars is not None else []
+            "name": stack_name,
+            "stackFileContent": compose_content,
+            "env": env_vars if env_vars else []
         }
-
+    
         response = requests.post(url, json=data, headers=headers)
         if response.status_code == 200:
             print(f"Stack '{stack_name}' created successfully.")
         else:
             raise Exception(f"Failed to create stack: {response.text}")
+    
 
     def create_user(self, new_username, new_password, role=1):
         """
@@ -235,9 +274,14 @@ class PortainerAPI:
         Raises:
         - Exception: If any of the steps fail.
         """
+        # Step 0: download docker-compose.yaml file
+        compose_file_raw = self.download_compose_file_from_github(file_path=compose_file_path,
+                                                                  repository_ref = repository_ref,
+                                                                  repository_url = repository_url)
+        
         # Step 1: Create the stack
         print(f"Creating stack '{stack_name}'...")
-        self.create_stack(stack_name, compose_file_path, endpoint_id, env_vars, repository_url, repository_ref)
+        self.create_stack(stack_name, compose_content = compose_file_raw, endpoint_id = endpoint_id, env_vars = env_vars)
 
         # Step 2: Stop the stack
         print(f"Stopping stack '{stack_name}'...")
