@@ -7,6 +7,9 @@ services:
       - "traefik.http.routers.slicer-${UNAME}.rule=Host(`slicer-${UNAME}.${QUBEIP}.nip.io`)"
       - "traefik.http.services.slicer-${UNAME}.loadbalancer.server.port=3000"
 
+    volumes:
+      - $HOME_RESEARCHER:/config/researcher_home
+
     environment:
       - CONTAINER_URL=http://slicer-${UNAME}.${QUBEIP}.nip.io:${QUBEPORT}
       - CUSTOM_USER=${UNAME}
@@ -14,6 +17,7 @@ services:
       - QUBEPORT
       - QUBEIP
       - UNAME
+      - HOME_RESEARCHER=/home/luna.kuleuven.be/${UNAME}
       
     networks:
       - traefik-public
