@@ -17,6 +17,8 @@ services:
       - QUBEPORT
       - QUBEIP
       - UNAME
+      - PUID
+      - PGID
       
     networks:
       - traefik-public
