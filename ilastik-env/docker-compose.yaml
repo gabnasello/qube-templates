@@ -7,6 +7,9 @@ services:
       - "traefik.http.routers.ilastik-${UNAME}.rule=Host(`ilastik-${UNAME}.${QUBEIP}.nip.io`)"
       - "traefik.http.services.ilastik-${UNAME}.loadbalancer.server.port=3000"
 
+    volumes:
+      - /home/luna.kuleuven.be/${UNAME}:/config/researcher_home
+      
     environment:
       - CONTAINER_URL=http://ilastik-${UNAME}.${QUBEIP}.nip.io:${QUBEPORT}
       - CUSTOM_USER=${UNAME}
