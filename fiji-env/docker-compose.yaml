@@ -7,6 +7,9 @@ services:
       - "traefik.http.routers.fiji-${UNAME}.rule=Host(`fiji-${UNAME}.${QUBEIP}.nip.io`)"
       - "traefik.http.services.fiji-${UNAME}.loadbalancer.server.port=3000"
 
+    volumes:
+      - /home/luna.kuleuven.be/${UNAME}:/config/researcher_home
+      
     environment:
       - CONTAINER_URL=http://fiji-${UNAME}.${QUBEIP}.nip.io:${QUBEPORT}
       - CUSTOM_USER=${UNAME}
